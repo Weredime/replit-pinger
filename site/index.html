@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Pinger</title>
+    <title>Replit Pinger</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <style>
@@ -27,8 +27,8 @@
     </noscript>
     <div class="login">
       <div class="row center-align">
-        <h5>Pinger</h5>
-        <h6>Add your url for pinging every second!</h6>
+        <h5>Repl.it pinger</h5>
+        <h6>This app is used to ping all of your repls, to keep them up and running</h6>
       </div>
       <div class="row">
         <div class="input-field col s12">
@@ -65,7 +65,8 @@
           if (res.ok) {
             document.querySelector("h5").innerHTML = `Added`
           } else document.querySelector("h5").innerHTML = "Request didnt work: "+res.error
-          document.getElementById("url").style.display = "none"
+          document.getElementById("repl_name").style.display = "none"
+          document.getElementById("username").style.display = "none"
           document.getElementById("submit").style.display = "none"
           document.getElementById("label").style.display = "none"
         })

@@ -11,21 +11,41 @@ app.put("/", express.json(), async (req, res) => {
   let username = req.body.username;
   let repl = req.body.repl;
 
-  if ((await fetch(`https://replit.com/@${username}/${repl}`)).status === 404) {
-    return res.json({ error: "You literally entered an incorrect repl"})
+  const re = await fetch(`https://replit.com/@${username}/${repl}`, {
+    headers: {
+      "User-Agent": "Mozilla 5.0"
+    }
+  });
+
+  const { status } = re;
+
+  const dt = JSON.parse(fs.readFileSync("repls.json"));
+  
+  if (status !== 200) {
+    console.log(`Somebody tried to add ${username}/${repl} but it didnt work :haha: - ${status}`)
+    return res.json({ error: "invalid repl"})
+  } else {
+
+    const ids = dt.map(d => `@${d.user}/${d.name || d.user}`.toLowerCase());
+
+  if (ids.indexOf(`@${username}/${repl}`.toLowerCase()) != -1) {
+    return res.json({ error: "This repl has already been added!" })
   }
+  }
+  console.log(`Somebody is adding ${username}/${repl}`)
 
   const replData = {
     user: username,
     name: repl
   }
 
-  const dt = JSON.parse(fs.readFileSync("repls.json"));
+  
+  
   dt.push(replData);
 
   fs.writeFileSync("repls.json", JSON.stringify(dt));
 
-  return res.json({ ok: "done"})
+  return res.json({ ok: "done"}) 
 })
 
 app.listen(3000, () => {

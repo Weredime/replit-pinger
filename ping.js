@@ -8,9 +8,13 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 */
 const ping = module.exports.ping = async (username, repl, block) => {
   const startTime = Date.now()
-  const res = await fetch(getReplURL(username, repl));
+  try {
+    const res = await fetch(getReplURL(username, repl || username));
+  } catch {
+    // I dont care what happens
+  }
 
-  console.log(`[BLOCK ${block}]: ${username}/${repl}(${(Date.now() - startTime) / 1000})`);
+  console.log(`[BLOCK ${block}]: ${username}/${repl || username}(${(Date.now() - startTime) / 1000})`);
 }
 
 module.exports.main = async (getRepls) => {
@@ -28,11 +32,9 @@ module.exports.main = async (getRepls) => {
       chunks[chunks.length - 1].push([repl.user, repl.name])
     }
 
-    i = 0;
-    for (const chunk of chunks) {
-      i++
-      await Promise.all(chunk.map(dt => ping(...dt, i)))
-    }
+    console.log(`There are ${chunks.length} chunks`)
+
+    Promise.all(chunks.map((chunk, ind) => Promise.all(chunk.map(dt => ping(...dt, ind+1)))))
 
     await sleep(10000)
   }
